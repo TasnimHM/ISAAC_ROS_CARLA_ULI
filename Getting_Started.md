@@ -159,4 +159,10 @@ ros2 node list
 ```
 And you will see /stereo_cam_node if it's working
 
+To get inside the container again after exiting:
+
+```bash
+docker start -ai isaac_carla_container
+```
+
 
