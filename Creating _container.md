@@ -29,7 +29,7 @@ docker run -it \
   isaac_ros_dev-x86_64
 ```
 
-### ROS2 Node 
+### ROS2 Node Testing
 
 Navigate to the src/ folder and create ROS2 Pyhton package:
 ```bash
@@ -121,6 +121,42 @@ setup(
     },
 )
 ```
+Save and exit with Ctrl + O, Enter, then Ctrl + X.
 
+Built the package: 
+
+```bash
+cd /workspaces/isaac_ros_carla_uli_ws
+colcon build --packages-select stereo_cam_node
+```
+
+Source the Workspace:
+
+```bash
+source install/setup.bash
+```
+Run the node : 
+
+```bash
+ros2 run stereo_cam_node stereo_subscriber
+```
+
+Open a new terminal tab or window and get inside the container :
+
+```bash
+docker exec -it isaac_carla_container bash
+```
+
+Source the Workspace in second terminal:
+
+```bash
+source install/setup.bash
+```
+Check the topics :
+
+```bash
+ros2 node list
+```
+And you will see /stereo_cam_node if it's working
 
 
