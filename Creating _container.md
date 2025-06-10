@@ -94,6 +94,10 @@ nano setup.py
 Add this : 
 
 ```bash
+from setuptools import find_packages, setup
+
+package_name = 'stereo_cam_node'
+
 setup(
     name=package_name,
     version='0.0.0',
