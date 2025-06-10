@@ -28,3 +28,68 @@ docker run -it \
   -w /workspaces/isaac_ros_carla_uli_ws \
   isaac_ros_dev-x86_64
 ```
+
+### ROS2 Node 
+
+Navigate to the src/ folder and create ROS2 Pyhton package:
+```bash
+cd /workspaces/isaac_ros_carla_uli_ws/src
+ros2 pkg create --build-type ament_python stereo_cam_node --dependencies rclpy sensor_msgs
+```
+
+Add Add stereo_subscriber.py:
+
+```bash
+cd /workspaces/isaac_ros_carla_uli_ws/src/stereo_cam_node/stereo_cam_node
+nano stereo_subscriber.py
+```
+Paste the following : 
+
+```bash
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Image, CameraInfo
+
+class StereoCamNode(Node):
+    def __init__(self):
+        super().__init__('stereo_cam_node')
+        self.create_subscription(Image, '/carla/left/image_raw', self.left_image_cb, 10)
+        self.create_subscription(Image, '/carla/right/image_raw', self.right_image_cb, 10)
+        self.create_subscription(CameraInfo, '/carla/left/camera_info', self.left_info_cb, 10)
+        self.create_subscription(CameraInfo, '/carla/right/camera_info', self.right_info_cb, 10)
+
+    def left_image_cb(self, msg):
+        self.get_logger().info('📸 Left image received.')
+
+    def right_image_cb(self, msg):
+        self.get_logger().info('📸 Right image received.')
+
+    def left_info_cb(self, msg):
+        self.get_logger().info('📷 Left camera info received.')
+
+    def right_info_cb(self, msg):
+        self.get_logger().info('📷 Right camera info received.')
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = StereoCamNode()
+    rclpy.spin(node)
+    rclpy.shutdown()
+
+```
+Save and exit with Ctrl + O, Enter, then Ctrl + X.
+
+Make it executable:
+
+```bash
+chmod +x stereo_subscriber.py
+```
+
+Edit setup.py:
+Go to your package root:
+```bash
+cd /workspaces/isaac_ros_carla_uli_ws/src/stereo_cam_node
+nano setup.py
+```
+
+
