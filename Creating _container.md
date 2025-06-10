@@ -91,5 +91,32 @@ Go to your package root:
 cd /workspaces/isaac_ros_carla_uli_ws/src/stereo_cam_node
 nano setup.py
 ```
+Add this : 
+
+```bash
+setup(
+    name=package_name,
+    version='0.0.0',
+    packages=find_packages(exclude=['test']),
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+    ],
+    install_requires=['setuptools'],
+    zip_safe=True,
+    maintainer='Humaira Tasnim',
+    maintainer_email='htasnim42@tntech.edu',
+    description='Minimal stereo camera ROS 2 node for CARLA',
+    license='MIT',
+    tests_require=['pytest'],
+    entry_points={
+        'console_scripts': [
+            'stereo_subscriber = stereo_cam_node.stereo_subscriber:main',
+        ],
+    },
+)
+```
+
 
 
