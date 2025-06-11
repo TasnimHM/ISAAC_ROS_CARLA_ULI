@@ -164,5 +164,107 @@ To get inside the container again after exiting:
 ```bash
 docker start -ai isaac_carla_container
 ```
+Open CARLA_cam_publisher:
 
+```bash
+nano /workspaces/isaac_ros_carla_uli_ws/src/stereo_cam_node/stereo_cam_node/carla_cam_publisher.py
+```
+copy and paste:
+```bash
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Image, CameraInfo
+from cv_bridge import CvBridge
+import carla
+import numpy as np
+import time
+
+class CarlaCameraPublisher(Node):
+    def __init__(self):
+        super().__init__('carla_camera_publisher')
+        self.bridge = CvBridge()
+        self.pub_image = self.create_publisher(Image, '/carla/left/image_raw', 10)
+        self.pub_info = self.create_publisher(CameraInfo, '/carla/left/camera_info', 10)
+
+        # Connect to CARLA
+        client = carla.Client('localhost', 2000)
+        client.set_timeout(5.0)
+        self.world = client.get_world()
+        blueprint_library = self.world.get_blueprint_library()
+
+        # Get the first vehicle
+        # Wait for a vehicle to appear in the world
+        timeout_sec = 10
+        start = time.time()
+        vehicles = []
+
+        self.get_logger().info("Waiting for vehicles to spawn in CARLA...")
+
+        while len(vehicles) == 0 and (time.time() - start) < timeout_sec:
+            vehicles = self.world.get_actors().filter('vehicle.*')
+            time.sleep(0.5)
+
+        if not vehicles:
+            self.get_logger().error("No vehicles found in CARLA after waiting.")
+            return
+
+        vehicle = vehicles[0]
+        self.get_logger().info(f"Connected to vehicle: {vehicle.type_id}")
+
+        # Create and attach a camera sensor
+        cam_bp = blueprint_library.find('sensor.camera.rgb')
+        cam_bp.set_attribute('image_size_x', '800')
+        cam_bp.set_attribute('image_size_y', '600')
+        cam_bp.set_attribute('fov', '90')
+
+        cam_transform = carla.Transform(carla.Location(x=1.5, z=2.4))
+        self.sensor = self.world.spawn_actor(cam_bp, cam_transform, attach_to=vehicle)
+
+        self.sensor.listen(self.camera_callback)
+
+        self.get_logger().info("Camera sensor connected and publishing!")
+
+    def camera_callback(self, image):
+        # Convert to numpy array
+        array = np.frombuffer(image.raw_data, dtype=np.uint8)
+        array = array.reshape((image.height, image.width, 4))[:, :, :3]
+
+        # Convert to ROS Image message
+        msg = self.bridge.cv2_to_imgmsg(array, encoding='bgr8')
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = "carla_left_camera"
+        self.pub_image.publish(msg)
+
+        # Dummy camera info (we'll fix this later)
+        cam_info = CameraInfo()
+        cam_info.header = msg.header
+        cam_info.width = image.width
+        cam_info.height = image.height
+        self.pub_info.publish(cam_info)
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = CarlaCameraPublisher()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
+Build and source: 
+
+```bash
+colcon build --packages-select stereo_cam_node
+source install/setup.bash
+```
+Run: 
+
+```bash
+ros2 run stereo_cam_node carla_cam_publisher
+```
 
