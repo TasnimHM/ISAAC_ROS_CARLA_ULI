@@ -265,6 +265,6 @@ source install/setup.bash
 Run: 
 
 ```bash
-ros2 run stereo_cam_node carla_cam_publisher
+ros2 run carla_uli_api carla_cam_publisher
 ```
 
