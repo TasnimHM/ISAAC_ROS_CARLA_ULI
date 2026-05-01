@@ -30,7 +30,7 @@ See detailed setup instructions here:
 4. Monitor pose output  
 
 👉 Full pipeline details:
-👉 [Pipeline Guide](pipeline.md)
+👉 [Pipeline Guide](run_pipeline.md)
 
 ## 📊 Output
 
