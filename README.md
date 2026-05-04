@@ -86,4 +86,4 @@ The following steps outline the intended pipeline:
 ## 👩‍💻 Author
 
 Humaira Tasnim  
-MS Mechanical Engineering, Tennessee Technological University
+MS Mechanical Engineering, Tennessee Tech University
