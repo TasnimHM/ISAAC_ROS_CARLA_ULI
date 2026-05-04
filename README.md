@@ -9,7 +9,7 @@ The goal of this project is to understand and prototype a perception pipeline in
 - ROS2-based data publishing
 - Integration attempts with Isaac ROS Visual SLAM
 
-⚠️ This is an **experimental and ongoing project**, not a fully validated SLAM system.
+⚠️ This is an **experimental project**, not a fully validated SLAM system.
 
 ---
 
