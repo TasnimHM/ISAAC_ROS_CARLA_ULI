@@ -22,7 +22,7 @@ This setup relies on the following external tools:
 - NVIDIA Isaac ROS (Visual SLAM)
 - Docker-based development environment
 
-👉 These components must be installed separately on your system.
+These components must be installed separately on your system.
 
 ---
 
@@ -41,8 +41,7 @@ This repository does not include these dependencies.
 
 ## ⚙️ Setup
 
-See detailed setup instructions here:  
-👉 [Setup Guide](setup.md)
+ [Setup Guide](setup.md)
 
 ---
 
@@ -55,8 +54,7 @@ The following steps outline the intended pipeline:
 3. Attempt to launch Isaac ROS Visual SLAM  
 4. Monitor pose output (if available)
 
-👉 Full pipeline details:  
-👉 [Pipeline Guide](run_pipeline.md)
+ [Pipeline Guide](run_pipeline.md)
 
 ---
 
